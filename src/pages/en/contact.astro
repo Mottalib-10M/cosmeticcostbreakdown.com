@@ -1,0 +1,27 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { CONTACT_EMAIL } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+import { contactPageSchema } from '../../lib/seo';
+const lang = 'en';
+const path = route('contact', lang);
+const description = 'Write to the publisher of Cosmetic Cost Breakdown about a rate, a code or a source. E-mail only: no consultation, no quote, no medical advice, nothing passed on to anyone.';
+---
+<PageLayout title="Contact Cosmetic Cost Breakdown: corrections to a rate or a source" description={description} lang={lang} noindex={true} jsonLd={[contactPageSchema({ name: 'Contact', description, path, lang })]} breadcrumbs={[{ label: 'Contact' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none prose-headings:font-serif">
+    <h1>Contact</h1>
+    <p>By e-mail: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. No form and no phone line: a cosmetic surgery price page that asks for your phone number usually sells it to clinics or lenders, and this one passes nothing on.</p>
+    <h2>Messages that help</h2>
+    <ul>
+      <li>A rate that differs from the CMS file: name the code, the file and its edition.</li>
+      <li>A new quarterly addendum, conversion factor or wage index that we have not loaded yet.</li>
+      <li>A code that describes a procedure better than the one used here, with the reason.</li>
+      <li>Embedding the calculator on a newsroom or patient education page: the code is on the <a href={route('widget', lang)}>embed page</a>.</li>
+    </ul>
+    <h2>What we cannot do</h2>
+    <p>We do not examine anyone, recommend a procedure, a surgeon or a clinic, review a quote you send us or arrange financing. For care, ask a board-certified surgeon; for coverage, ask your health plan in writing.</p>
+    <h2>Publisher</h2>
+    <LegalIdentity lang={lang} />
+  </div>
+</PageLayout>

@@ -1,0 +1,56 @@
+---
+/**
+ * A metro page: the calculator set on the metro, the folded answer, the metro's own text
+ * (src/content/metros/<slug>.ts), then the board of every procedure in that metro, built from the CMS files.
+ * The board is generated, so it carries data-chrome; the prose of the content file is what makes the page.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Clamp from './Clamp.astro';
+import Tool from './Tool.astro';
+import Body from './Body.astro';
+import { route, ROUTES } from '../i18n/routes';
+import { label } from '../i18n/nav';
+import { t } from '../i18n/ui';
+import { GUIDES, guideById, metroPageById, metroId } from '../lib/pages';
+import { helpers, SOURCES, table } from '../lib/helpers';
+import { KIT as K } from '../lib/kit';
+import { articleSchema, faqSchema, breadcrumbSchema, webPageSchema, webApplicationSchema } from '../lib/seo';
+import { AUTHOR_NAME } from '../data/site-config';
+import type { MetroDef } from '../lib/page-types';
+interface Props { def: MetroDef }
+const { def } = Astro.props;
+const lang = 'en';
+const ui = t(lang);
+const m = K.M(def.slug);
+const id = metroId(def.slug);
+const path = route(id, lang);
+const h1 = `Cosmetic surgery costs in ${m.name}, line by line`;
+const hub = 'cosmetic-surgery-cost-by-city';
+const jsonLd = [webApplicationSchema({ name: h1, description: def.description, path, lang }), articleSchema({ title: h1, description: def.description, path, lang }), webPageSchema({ name: h1, description: def.description, path, lang }), breadcrumbSchema([{ name: ui.breadcrumbHome, path: route('home', lang) }, { name: label(hub), path: route(hub, lang) }, { name: m.name, path }])];
+if (def.faqs.length) jsonLd.push(faqSchema(def.faqs, lang));
+const card = (x: string) => guideById(x)?.card ?? (metroPageById(x) ? metroPageById(x)!.intro : '');
+const related = def.related.filter((x) => ROUTES.some((r) => r.id === x)).map((x) => ({ href: route(x, lang), name: label(x), description: card(x) }));
+const sources = ['cms_asc_addenda', 'cms_opps_b', 'cms_wage_index', 'cms_rvu26d', 'asps_stats'].map((k) => ({ name: SOURCES[k].label, url: SOURCES[k].url }));
+const pageOf = (pid: string) => GUIDES.find((g) => g.tool === 'cost' && g.toolArg?.pr === pid);
+const rows = K.PROC_IDS.map((pid) => {
+  const a = K.est(pid, def.slug, 'asc'), h = K.est(pid, def.slug, 'hopd');
+  const g = pageOf(pid);
+  return [g ? `<a href="${route(g.id, lang)}">${K.PR(pid).short}</a>` : K.PR(pid).short, K.usd(a.surgeon), K.usd(a.anesthesiaAmount), K.usd(a.facilityAmount), K.usd(h.facilityAmount), K.usd(a.total)];
+});
+---
+<PageLayout title={def.title} description={def.description} lang={lang} jsonLd={jsonLd} faqs={def.faqs} related={related} sources={sources} breadcrumbs={[{ label: label(hub), href: route(hub, lang) }, { label: m.name }]}>
+  <article>
+    <header class="mb-4">
+      <h1 class="font-serif text-[1.75rem] font-bold text-navy-900 max-sm:leading-tight sm:text-3xl md:text-4xl">{h1}</h1>
+      <p class="mt-2 text-base text-navy-700 sm:text-lg">{def.intro}</p>
+    </header>
+    <div data-outil data-chrome class="mb-4"><Tool kind="cost" arg={{ mx: def.slug, ...(def.toolArg ?? {}) }} idPrefix={`m-${def.slug}`} /></div>
+    <p class="mb-6 text-sm text-navy-600">{ui.reviewedBy} <a href={route('about', lang)} class="underline hover:text-navy-900">{AUTHOR_NAME}</a> · <a href={route('method', lang)} class="underline hover:text-navy-900">{label('method')}</a> · CBSA {m.cbsa}, Medicare locality {m.localityName.toLowerCase()} · not a quote</p>
+    <Clamp text={def.resume} lang={lang} id={`clamp-${def.slug}`} class="mb-8" />
+    <Body html={def.body(helpers())} path={path} />
+    <section data-chrome class="mt-10">
+      <h2 class="font-serif text-2xl font-bold text-navy-900">Every procedure in {m.name}</h2>
+      <Fragment set:html={table(['Procedure', 'Surgeon, survey average', 'Anesthesia', 'Operating room, surgery center', 'Operating room, hospital', 'Total with a surgery center'], rows, `Medicare 2026 rates adjusted to ${m.name}: wage index ${K.dec(m.wiAsc, 4)} for surgery centers and ${K.dec(m.wiHospital, 4)} for hospitals, anesthesia conversion factor ${K.cents(m.anesCf)}. Surgeon: national survey average, ${K.P.surgeonFee.year}.`, ['l', 'r', 'r', 'r', 'r', 'r'])} />
+    </section>
+  </article>
+</PageLayout>

@@ -1,0 +1,21 @@
+{
+ "name": "Cosmetic Cost Breakdown",
+ "short_name": "Cosmetic Cost Breakdown",
+ "description": "Cosmetic surgery cost split into surgeon, anesthesia, operating room and recovery, using 2026 Medicare rate files adjusted to your metro area.",
+ "start_url": "/en/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#7A2E3B",
+ "icons": [
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

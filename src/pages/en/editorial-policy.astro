@@ -1,0 +1,23 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { route } from '../../i18n/routes';
+import { AUTHOR_NAME, REVIEW_CYCLE_MONTHS } from '../../data/site-config';
+const lang = 'en';
+---
+<PageLayout title="Editorial policy of Cosmetic Cost Breakdown: public files, dated" description="How Cosmetic Cost Breakdown writes its pages: CMS rate files and published survey averages only, every figure computed by a script, no medical advice, no money from clinics." lang={lang} noindex={true} breadcrumbs={[{ label: 'Editorial policy' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none prose-headings:font-serif">
+    <h1>Editorial policy</h1>
+    <h2>What counts as a source</h2>
+    <p>Operating room and anesthesia figures come from the rate files of the Centers for Medicare and Medicaid Services, read in the official file and recorded with their edition. Surgeon fees come from the averages the American Society of Plastic Surgeons publishes procedure by procedure, quoted one at a time with their year and a link, never reproduced as a table. Botox units come from the FDA label, pay from the Bureau of Labor Statistics, credit rates from the Federal Reserve. Clinic, lender and review site pages are read to learn what people ask, never as a source of a number.</p>
+    <h2>How a figure reaches a page</h2>
+    <p>No figure is typed into the text. A script reads the CMS files and writes the rates of each code; the pages compute every amount from those tables and from one dated parameter file when the site is built. A procedure that cannot be priced from a public file is left out rather than guessed.</p>
+    <h2>Health pages</h2>
+    <p>The site describes bills. It does not say whether a procedure suits anyone, compare techniques, rank surgeons or discuss results. Where a page names what an operation involves, it links to MedlinePlus, the National Library of Medicine's patient site. Questions about your body belong with a board-certified surgeon.</p>
+    <h2>What is to come is labeled</h2>
+    <p>A rate announced for a later quarter or year is shown as to come, with its date, never as the current rate. A figure we cannot trace to an official or public document is not published.</p>
+    <h2>Independence</h2>
+    <p>{AUTHOR_NAME} receives nothing from surgeons, clinics, surgery centers, drug makers, lenders or lead buyers and links to none of them. There is no advertising today; if some is added it will be labeled, limited to three places a page, and never placed above a calculator.</p>
+    <h2>Review and corrections</h2>
+    <p>The site is reviewed at least every {REVIEW_CYCLE_MONTHS} months, and each quarter when CMS publishes new addenda. A reported error is checked against the source and, once fixed, moves the date shown on the page. Write through the <a href={route('contact', lang)}>contact page</a>; the formulas are on the <a href={route('method', lang)}>method page</a>.</p>
+  </div>
+</PageLayout>

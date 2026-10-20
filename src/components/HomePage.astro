@@ -1,0 +1,80 @@
+---
+/**
+ * Home (the pillar). Order: the calculator, the value sentence, the folded answer, then the "anatomy of a bill"
+ * (the four lines of one tummy tuck as an ordered list), the price board of every procedure with its lines kept
+ * apart, the prose of src/content/home.ts, the metro areas as chips, the pages by group. Generated blocks carry data-chrome.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Clamp from './Clamp.astro';
+import Tool from './Tool.astro';
+import Body from './Body.astro';
+import { HOME, VALUE } from '../content/home';
+import { route, ROUTES } from '../i18n/routes';
+import { GROUPS } from '../i18n/nav';
+import { helpers, SOURCES, table } from '../lib/helpers';
+import { GUIDES, METRO_PAGES, metroId } from '../lib/pages';
+import { KIT as K } from '../lib/kit';
+import { faqSchema, organizationSchema, websiteSchema, webPageSchema, webApplicationSchema } from '../lib/seo';
+import { LAST_UPDATED } from '../data/site-config';
+const lang = 'en';
+const x = HOME;
+const path = route('home', lang);
+const h = helpers();
+const sources = x.sources.map((k) => ({ name: SOURCES[k].label, url: SOURCES[k].url }));
+const jsonLd = [websiteSchema(lang), organizationSchema(lang), webPageSchema({ name: x.h1, description: x.description, path, lang }), webApplicationSchema({ name: x.h1, description: x.description, path, lang }), faqSchema(x.faqs, lang)];
+const pageOf = (id: string) => GUIDES.find((g) => g.tool === 'cost' && g.toolArg?.pr === id);
+const board = K.PROC_IDS.map((id) => ({ id, a: K.est(id), hp: K.est(id, 'us', 'hopd') })).sort((p, q) => q.a.total - p.a.total).map(({ id, a, hp }) => {
+  const g = pageOf(id);
+  return [g ? `<a href="${route(g.id, lang)}">${K.PR(id).short}</a>` : K.PR(id).short, K.usd(a.surgeon), K.usd(a.anesthesiaAmount), K.usd(a.facilityAmount), K.usd(hp.facilityAmount), K.usd(a.total)];
+});
+const tt = K.est('tummy_tuck');
+const days = 14;
+const after = days * K.DAILY_PAY;
+const lines = [
+  { n: '1', name: "Surgeon's fee", v: tt.surgeon, src: `National average reported for ${K.P.surgeonFee.year} by the surgeons' society survey. Excludes everything below.` },
+  { n: '2', name: 'Anesthesia', v: tt.anesthesiaAmount, src: `${tt.anesthesia.baseUnits} base units plus ${K.dec(tt.anesthesia.timeUnits, 1)} time units for ${Math.round(tt.minutes)} minutes, at the 2026 Medicare national factor of ${K.cents(tt.anesthesia.cf)}.` },
+  { n: '3', name: 'Operating room', v: tt.facilityAmount, src: `Surgery center rate for CPT 15830, Addendum AA, October 2026.` },
+  { n: '4', name: 'The weeks after', v: after, src: `${days} unpaid working days at the US median pay, before garments and medicines. Depends entirely on you.` },
+];
+---
+<PageLayout title={x.title} description={x.description} lang={lang} jsonLd={jsonLd} faqs={x.faqs} sources={sources}>
+  <header class="mb-4">
+    <h1 class="font-serif text-[1.75rem] font-bold text-navy-900 max-sm:leading-tight sm:text-3xl md:text-4xl">{x.h1}</h1>
+    <p class="mt-2 text-base text-navy-700 sm:text-lg">{x.intro}</p>
+  </header>
+  <div data-outil data-chrome><Tool kind="cost" idPrefix="home" /></div>
+  <p class="mt-3 text-sm text-navy-600">Medicare 2026 rate files, {K.METROS.length} metro areas · <a href={route('method', lang)} class="underline">Where each line comes from</a> · <a href={route('about', lang)} class="underline">Who publishes this</a> · updated <time datetime={LAST_UPDATED}>{K.day(LAST_UPDATED)}</time></p>
+  <p class="mt-4 border-l-2 border-accent-600 pl-3 text-navy-800">{VALUE}</p>
+  <Clamp text={x.resume} lang={lang} id="clamp-home" class="my-8" />
+  <figure data-chrome class="my-8">
+    <figcaption class="font-serif text-xl font-bold text-navy-900">Anatomy of one bill: a tummy tuck at national rates</figcaption>
+    <ol class="mt-4 divide-y divide-navy-100 border-y border-navy-100">
+      {lines.map((l) => (
+        <li class="grid grid-cols-[2rem_1fr_auto] items-baseline gap-x-3 py-3">
+          <span class="font-serif text-lg text-accent-700">{l.n}</span>
+          <span><span class="font-semibold text-navy-900">{l.name}</span><span class="block text-sm text-navy-600">{l.src}</span></span>
+          <span class="tabular-nums text-lg font-semibold text-navy-900">{K.usd(l.v)}</span>
+        </li>
+      ))}
+    </ol>
+  </figure>
+  <section data-chrome class="mt-8">
+    <h2 class="font-serif text-2xl font-bold text-navy-900">Every procedure, line by line</h2>
+    <Fragment set:html={table(['Procedure', `Surgeon, average (${K.P.surgeonFee.year})`, 'Anesthesia', 'Room, surgery center', 'Room, hospital', 'Benchmark total'], board, 'National rates, no metro adjustment. Total = surgeon + anesthesia + surgery center room. Room and anesthesia: Medicare 2026 payment for the same codes; private prices are set by each practice and are usually higher.', ['l', 'r', 'r', 'r', 'r', 'r'])} />
+  </section>
+  <section class="mt-8"><Body html={x.why(h)} path={path} /></section>
+  <section class="mt-10" data-chrome>
+    <h2 class="font-serif text-xl font-bold text-navy-900">The bill in your metro area</h2>
+    <ul class="mt-3 flex flex-wrap gap-2 text-sm">
+      {METRO_PAGES.map((s) => <li><a href={route(metroId(s.slug), lang)} class="inline-block rounded-full border border-navy-200 px-3 py-1 font-medium text-accent-700 hover:border-accent-600">{K.M(s.slug).name}</a></li>)}
+    </ul>
+    {GROUPS.map((g) => (
+      <div class="mt-6">
+        <h3 class="font-serif text-lg font-bold text-navy-900">{g.label}</h3>
+        <ul class="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+          {GUIDES.filter((p) => p.group === g.id && ROUTES.some((r) => r.id === p.id)).map((p) => <li><a href={route(p.id, lang)} class="font-medium text-accent-700 underline-offset-2 hover:underline">{p.nav}</a><span class="block text-navy-600">{p.card}</span></li>)}
+        </ul>
+      </div>
+    ))}
+  </section>
+</PageLayout>

@@ -1,0 +1,14 @@
+---
+/** Every procedure or guide page (src/content/procedures) and metro page (src/content/metros). */
+import ContentPage from '../../components/ContentPage.astro';
+import MetroPage from '../../components/MetroPage.astro';
+import { GUIDES, METRO_PAGES } from '../../lib/pages';
+export function getStaticPaths() {
+  return [
+    ...GUIDES.map((page) => ({ params: { slug: page.slug }, props: { kind: 'g', def: page } })),
+    ...METRO_PAGES.map((def) => ({ params: { slug: `cost-by-city/${def.slug}` }, props: { kind: 'm', def } })),
+  ];
+}
+const { kind, def } = Astro.props as { kind: 'g' | 'm'; def: any };
+---
+{kind === 'g' ? <ContentPage page={def} /> : <MetroPage def={def} />}

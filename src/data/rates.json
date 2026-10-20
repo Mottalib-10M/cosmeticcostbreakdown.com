@@ -1,0 +1,247 @@
+{
+ "anesNationalCf": 20.49754,
+ "asa": {
+  "00103": 5,
+  "00120": 5,
+  "00160": 5,
+  "00190": 5,
+  "00300": 5,
+  "00400": 3,
+  "00402": 5,
+  "00802": 5
+ },
+ "asp": {
+  "J0585": {
+   "dosage": "1 UNIT",
+   "label": "Injection,onabotulinumtoxina",
+   "limit": 6.514
+  },
+  "J0586": {
+   "dosage": "5 Unit",
+   "label": "Abobotulinumtoxina",
+   "limit": 8.937
+  },
+  "J0588": {
+   "dosage": "1 UNIT",
+   "label": "Incobotulinumtoxin a",
+   "limit": 5.262
+  },
+  "J0589": {
+   "dosage": "1 UNIT",
+   "label": "Inj daxibotulinumtoxina-lanm",
+   "limit": 3.252
+  }
+ },
+ "cpt": {
+  "15771": {
+   "asc": {
+    "indicator": "G2",
+    "label": "Grfg autol fat lipo 50 cc/<",
+    "multiple": true,
+    "rate": 1940.78
+   },
+   "intraMinutes": 60.0,
+   "opps": {
+    "apc": "5055",
+    "rate": 3620.48,
+    "status": "T"
+   }
+  },
+  "15820": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Blepharoplasty lower eyelid",
+    "multiple": true,
+    "rate": 1128.57
+   },
+   "intraMinutes": 36.0,
+   "opps": {
+    "apc": "5054",
+    "rate": 2107.97,
+    "status": "T"
+   }
+  },
+  "15822": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Blepharoplasty upper eyelid",
+    "multiple": true,
+    "rate": 1128.57
+   },
+   "intraMinutes": 33.0,
+   "opps": {
+    "apc": "5054",
+    "rate": 2107.97,
+    "status": "T"
+   }
+  },
+  "15828": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Rhytidectomy cheek chn & nck",
+    "multiple": true,
+    "rate": 1940.78
+   },
+   "intraMinutes": 0.0,
+   "opps": {
+    "apc": "5055",
+    "rate": 3620.48,
+    "status": "T"
+   }
+  },
+  "15830": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Exc excessive skin abdomen",
+    "multiple": true,
+    "rate": 2848.2
+   },
+   "intraMinutes": 120.0,
+   "opps": {
+    "apc": "5092",
+    "rate": 6783.99,
+    "status": "J1"
+   }
+  },
+  "15832": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Exc excessive skin thigh",
+    "multiple": true,
+    "rate": 1248.36
+   },
+   "intraMinutes": 150.0,
+   "opps": {
+    "apc": "5073",
+    "rate": 2967.63,
+    "status": "J1"
+   }
+  },
+  "15836": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Exc excessive skin arm",
+    "multiple": true,
+    "rate": 1248.36
+   },
+   "intraMinutes": 113.0,
+   "opps": {
+    "apc": "5073",
+    "rate": 2967.63,
+    "status": "J1"
+   }
+  },
+  "15877": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Suction lipectomy trunk",
+    "multiple": true,
+    "rate": 1940.78
+   },
+   "intraMinutes": 0.0,
+   "opps": {
+    "apc": "5055",
+    "rate": 3620.48,
+    "status": "T"
+   }
+  },
+  "19300": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Mastectomy for gynecomastia",
+    "multiple": true,
+    "rate": 1603.18
+   },
+   "intraMinutes": 50.0,
+   "opps": {
+    "apc": "5091",
+    "rate": 4000.24,
+    "status": "J1"
+   }
+  },
+  "19316": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Mastopexy",
+    "multiple": true,
+    "rate": 2848.2
+   },
+   "intraMinutes": 120.0,
+   "opps": {
+    "apc": "5092",
+    "rate": 6783.99,
+    "status": "J1"
+   }
+  },
+  "19325": {
+   "asc": {
+    "indicator": "G2",
+    "label": "Breast augmentation w/implt",
+    "multiple": true,
+    "rate": 3171.5
+   },
+   "intraMinutes": 60.0,
+   "opps": {
+    "apc": "5093",
+    "rate": 8350.42,
+    "status": "J1"
+   }
+  },
+  "21120": {
+   "asc": {
+    "indicator": "G2",
+    "label": "Genioplasty augmentation",
+    "multiple": true,
+    "rate": 3025.62
+   },
+   "intraMinutes": 55.0,
+   "opps": {
+    "apc": "5165",
+    "rate": 6048.05,
+    "status": "J1"
+   }
+  },
+  "30410": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Reconstruction of nose",
+    "multiple": true,
+    "rate": 3025.62
+   },
+   "intraMinutes": 120.0,
+   "opps": {
+    "apc": "5165",
+    "rate": 6048.05,
+    "status": "J1"
+   }
+  },
+  "67900": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Repair brow defect",
+    "multiple": true,
+    "rate": 1088.43
+   },
+   "intraMinutes": 70.0,
+   "opps": {
+    "apc": "5503",
+    "rate": 2428.98,
+    "status": "J1"
+   }
+  },
+  "69300": {
+   "asc": {
+    "indicator": "A2",
+    "label": "Revise external ear",
+    "multiple": true,
+    "rate": 1480.5
+   },
+   "intraMinutes": 120.0,
+   "opps": {
+    "apc": "5164",
+    "rate": 3387.27,
+    "status": "J1"
+   }
+  }
+ }
+}
