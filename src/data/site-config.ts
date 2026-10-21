@@ -1,5 +1,5 @@
 /** Configuration centrale du site (générée par new-site.py). */
-export const SITE_URL = "https://us-cosmetic-costs.example";
+export const SITE_URL = "https://cosmeticcostbreakdown.com";
 export const SITE_NAMES: Record<string, string> = {"en": "Cosmetic Cost Breakdown"};
 export const LANG_TAGS: Record<string, string> = {"en": "en-US"};
 export const OG_LOCALES: Record<string, string> = {"en": "en_US"};
@@ -16,7 +16,7 @@ export const AUTHOR_DESC: Record<string, string> = {"en": "Radif Partners splits
  *  themes reellement traites par le site, pas une liste de mots-cles : un sujet
  *  declare ici sans page qui le couvre est une declaration fausse. */
 export const KNOWS_ABOUT: Record<string, string[]> = {"en": ["Tummy tuck, liposuction and Brazilian butt lift costs", "Breast augmentation, breast lift and facelift costs", "Botox (onabotulinumtoxinA) treatment costs by area", "Anesthesia billing with base units and time units", "Surgery center and hospital outpatient facility fees"]};
-export const CONTACT_EMAIL = "contact@us-cosmetic-costs.example";
+export const CONTACT_EMAIL = "contact@cosmeticcostbreakdown.com";
 export const THEME_COLOR = '#7A2E3B';
 export const LOGO_SYMBOL = 'OR';
 export const BING_VERIFY_CODE = '';
