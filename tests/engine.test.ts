@@ -8,7 +8,7 @@ import METROS from '../src/data/metros.json';
 const R = RATES as unknown as Rates;
 const RU = P.rules as Rules;
 const ny = (METROS as Array<{ slug: string; wiAsc: number; wiHospital: number; anesCf: number }>).find((m) => m.slug === 'new-york')!;
-const pr = (id: string) => (P.procedures as Record<string, { codes: Array<{ cpt: string }>; asa: string; minutes: number | null; aspsFee: number }>)[id];
+const pr = (id: string) => (P.procedures as Record<string, { codes: Array<{ cpt: string }>; asa: string; minutes: number | null }>)[id];
 
 describe('CMS files as read', () => {
   it('ASC national rates of October 2026 (Addendum AA)', () => {
@@ -78,8 +78,9 @@ describe('anesthesia', () => {
 describe('total', () => {
   it('tummy tuck at national rates in a surgery center', () => {
     const c = cost({ procs: [pr('tummy_tuck')], setting: 'asc', place: null }, R, RU);
-    expect(c.surgeon).toBe(8174);
-    expect(c.total).toBeCloseTo(8174 + 2848.2 + 13 * 20.49754, 6);
+    expect(c.surgeon).toBe(0);
+    expect(c.surgeonIsQuote).toBe(false);
+    expect(c.total).toBeCloseTo(2848.2 + 13 * 20.49754, 6);
   });
   it('quotes replace the benchmarks; recovery is added', () => {
     const c = cost({ procs: [pr('tummy_tuck')], setting: 'asc', place: null, surgeonQuote: 9000, facilityQuote: 3000, anesthesiaQuote: 1200, daysOff: 10, dailyPay: 250, extras: 300 }, R, RU);
@@ -108,12 +109,18 @@ describe('finance', () => {
 });
 
 describe('parameters as read on their sources (2026-10-20)', () => {
-  it('surgeon survey averages of 2023 (ASPS cost pages), one per procedure', () => {
-    const fees = Object.fromEntries(Object.entries(P.procedures).map(([k, v]) => [k, (v as { aspsFee: number }).aspsFee]));
-    expect(fees).toEqual({ tummy_tuck: 8174, lipo: 4711, bbl: 7264, breast_aug: 4875, breast_lift: 6816, rhinoplasty: 7637, facelift: 11395, brow_lift: 5460, eyelid_upper: 3359, eyelid_lower: 3876, chin: 3641, otoplasty: 4625, arm_lift: 6192, thigh_lift: 7641, gynecomastia: 5587 });
-    expect(P.surgeonFee.year).toBe(2023);
-    expect((P.procedures.breast_aug as { aspsFatGrafting: number }).aspsFatGrafting).toBe(5719);
-    expect(P.botox.asps2023).toBe(435);
+  it('no surgeon-fee survey is used: no fee field, no survey source', () => {
+    expect((P as Record<string, unknown>).surgeonFee).toBeUndefined();
+    expect(JSON.stringify(P)).not.toMatch(/asps|plasticsurgery|american society of plastic/i);
+    for (const p of Object.values(P.procedures)) expect(Object.keys(p).some((k) => /fee/i.test(k))).toBe(false);
+  });
+  it('every procedure is still priced: operating room and anesthesia above zero', () => {
+    for (const id of Object.keys(P.procedures)) {
+      const c = cost({ procs: [pr(id)], setting: 'asc', place: null }, R, RU);
+      expect(c.facilityAmount, id).toBeGreaterThan(0);
+      expect(c.anesthesiaAmount, id).toBeGreaterThan(0);
+      expect(c.total, id).toBeCloseTo(c.facilityAmount + c.anesthesiaAmount, 6);
+    }
   });
   it('Botox Cosmetic label doses and the J0585 payment limit', () => {
     expect(Object.values(P.botox.areas).map((a) => a.units)).toEqual([20, 24, 40, 64, 26]);
@@ -125,8 +132,8 @@ describe('parameters as read on their sources (2026-10-20)', () => {
     expect(P.credit.personalLoan24).toBe(11.9);
   });
   it('every procedure and every source key resolves', () => {
-    for (const [id, p] of Object.entries(P.procedures) as Array<[string, { aspsSource: string; codes: Array<{ cpt: string }>; asa: string }]>) {
-      expect(P.sources[p.aspsSource as keyof typeof P.sources], id).toBeTruthy();
+    for (const [id, p] of Object.entries(P.procedures) as Array<[string, { minutesSource: string; codes: Array<{ cpt: string }>; asa: string }]>) {
+      if (p.minutesSource !== 'cms_time') expect(P.sources[p.minutesSource as keyof typeof P.sources], id).toBeTruthy();
       for (const c of p.codes) expect(R.cpt[c.cpt], `${id} ${c.cpt}`).toBeTruthy();
       expect(R.asa[p.asa], id).toBeGreaterThan(0);
     }

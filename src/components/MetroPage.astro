@@ -30,12 +30,12 @@ const jsonLd = [webApplicationSchema({ name: h1, description: def.description, p
 if (def.faqs.length) jsonLd.push(faqSchema(def.faqs, lang));
 const card = (x: string) => guideById(x)?.card ?? (metroPageById(x) ? metroPageById(x)!.intro : '');
 const related = def.related.filter((x) => ROUTES.some((r) => r.id === x)).map((x) => ({ href: route(x, lang), name: label(x), description: card(x) }));
-const sources = ['cms_asc_addenda', 'cms_opps_b', 'cms_wage_index', 'cms_rvu26d', 'asps_stats'].map((k) => ({ name: SOURCES[k].label, url: SOURCES[k].url }));
+const sources = ['cms_asc_addenda', 'cms_opps_b', 'cms_wage_index', 'cms_rvu26d'].map((k) => ({ name: SOURCES[k].label, url: SOURCES[k].url }));
 const pageOf = (pid: string) => GUIDES.find((g) => g.tool === 'cost' && g.toolArg?.pr === pid);
 const rows = K.PROC_IDS.map((pid) => {
   const a = K.est(pid, def.slug, 'asc'), h = K.est(pid, def.slug, 'hopd');
   const g = pageOf(pid);
-  return [g ? `<a href="${route(g.id, lang)}">${K.PR(pid).short}</a>` : K.PR(pid).short, K.usd(a.surgeon), K.usd(a.anesthesiaAmount), K.usd(a.facilityAmount), K.usd(h.facilityAmount), K.usd(a.total)];
+  return [g ? `<a href="${route(g.id, lang)}">${K.PR(pid).short}</a>` : K.PR(pid).short, K.usd(a.anesthesiaAmount), K.usd(a.facilityAmount), K.usd(h.facilityAmount), K.usd(a.total)];
 });
 ---
 <PageLayout title={def.title} description={def.description} lang={lang} jsonLd={jsonLd} faqs={def.faqs} related={related} sources={sources} breadcrumbs={[{ label: label(hub), href: route(hub, lang) }, { label: m.name }]}>
@@ -50,7 +50,7 @@ const rows = K.PROC_IDS.map((pid) => {
     <Body html={def.body(helpers())} path={path} />
     <section data-chrome class="mt-10">
       <h2 class="font-serif text-2xl font-bold text-navy-900">Every procedure in {m.name}</h2>
-      <Fragment set:html={table(['Procedure', 'Surgeon, survey average', 'Anesthesia', 'Operating room, surgery center', 'Operating room, hospital', 'Total with a surgery center'], rows, `Medicare 2026 rates adjusted to ${m.name}: wage index ${K.dec(m.wiAsc, 4)} for surgery centers and ${K.dec(m.wiHospital, 4)} for hospitals, anesthesia conversion factor ${K.cents(m.anesCf)}. Surgeon: national survey average, ${K.P.surgeonFee.year}.`, ['l', 'r', 'r', 'r', 'r', 'r'])} />
+      <Fragment set:html={table(['Procedure', 'Anesthesia', 'Operating room, surgery center', 'Operating room, hospital', 'Room and anesthesia, surgery center'], rows, `Medicare 2026 rates adjusted to ${m.name}: wage index ${K.dec(m.wiAsc, 4)} for surgery centers and ${K.dec(m.wiHospital, 4)} for hospitals, anesthesia conversion factor ${K.cents(m.anesCf)}. The surgeon's fee is not included: no public file prices it, enter your quote in the calculator.`, ['l', 'r', 'r', 'r', 'r'])} />
     </section>
   </article>
 </PageLayout>

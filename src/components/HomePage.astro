@@ -25,13 +25,13 @@ const jsonLd = [websiteSchema(lang), organizationSchema(lang), webPageSchema({ n
 const pageOf = (id: string) => GUIDES.find((g) => g.tool === 'cost' && g.toolArg?.pr === id);
 const board = K.PROC_IDS.map((id) => ({ id, a: K.est(id), hp: K.est(id, 'us', 'hopd') })).sort((p, q) => q.a.total - p.a.total).map(({ id, a, hp }) => {
   const g = pageOf(id);
-  return [g ? `<a href="${route(g.id, lang)}">${K.PR(id).short}</a>` : K.PR(id).short, K.usd(a.surgeon), K.usd(a.anesthesiaAmount), K.usd(a.facilityAmount), K.usd(hp.facilityAmount), K.usd(a.total)];
+  return [g ? `<a href="${route(g.id, lang)}">${K.PR(id).short}</a>` : K.PR(id).short, K.usd(a.anesthesiaAmount), K.usd(a.facilityAmount), K.usd(hp.facilityAmount), K.usd(a.total)];
 });
 const tt = K.est('tummy_tuck');
 const days = 14;
 const after = days * K.DAILY_PAY;
 const lines = [
-  { n: '1', name: "Surgeon's fee", v: tt.surgeon, src: `National average reported for ${K.P.surgeonFee.year} by the surgeons' society survey. Excludes everything below.` },
+  { n: '1', name: "Surgeon's fee", v: null as number | null, src: 'Set by each practice; no public file publishes it. Type the figure of your quote in the calculator above.' },
   { n: '2', name: 'Anesthesia', v: tt.anesthesiaAmount, src: `${tt.anesthesia.baseUnits} base units plus ${K.dec(tt.anesthesia.timeUnits, 1)} time units for ${Math.round(tt.minutes)} minutes, at the 2026 Medicare national factor of ${K.cents(tt.anesthesia.cf)}.` },
   { n: '3', name: 'Operating room', v: tt.facilityAmount, src: `Surgery center rate for CPT 15830, Addendum AA, October 2026.` },
   { n: '4', name: 'The weeks after', v: after, src: `${days} unpaid working days at the US median pay, before garments and medicines. Depends entirely on you.` },
@@ -53,14 +53,14 @@ const lines = [
         <li class="grid grid-cols-[2rem_1fr_auto] items-baseline gap-x-3 py-3">
           <span class="font-serif text-lg text-accent-700">{l.n}</span>
           <span><span class="font-semibold text-navy-900">{l.name}</span><span class="block text-sm text-navy-600">{l.src}</span></span>
-          <span class="tabular-nums text-lg font-semibold text-navy-900">{K.usd(l.v)}</span>
+          <span class="tabular-nums text-lg font-semibold text-navy-900">{l.v === null ? 'your quote' : K.usd(l.v)}</span>
         </li>
       ))}
     </ol>
   </figure>
   <section data-chrome class="mt-8">
     <h2 class="font-serif text-2xl font-bold text-navy-900">Every procedure, line by line</h2>
-    <Fragment set:html={table(['Procedure', `Surgeon, average (${K.P.surgeonFee.year})`, 'Anesthesia', 'Room, surgery center', 'Room, hospital', 'Benchmark total'], board, 'National rates, no metro adjustment. Total = surgeon + anesthesia + surgery center room. Room and anesthesia: Medicare 2026 payment for the same codes; private prices are set by each practice and are usually higher.', ['l', 'r', 'r', 'r', 'r', 'r'])} />
+    <Fragment set:html={table(['Procedure', 'Anesthesia', 'Room, surgery center', 'Room, hospital', 'Room and anesthesia'], board, 'National rates, no metro adjustment. Last column = anesthesia + surgery center room, before the surgeon, whose fee no public file publishes. Medicare 2026 payment for the same codes; private prices are set by each practice and are usually higher.', ['l', 'r', 'r', 'r', 'r'])} />
   </section>
   <section class="mt-8"><Body html={x.why(h)} path={path} /></section>
   <section class="mt-10" data-chrome>

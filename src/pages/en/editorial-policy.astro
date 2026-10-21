@@ -4,11 +4,11 @@ import { route } from '../../i18n/routes';
 import { AUTHOR_NAME, REVIEW_CYCLE_MONTHS } from '../../data/site-config';
 const lang = 'en';
 ---
-<PageLayout title="Editorial policy of Cosmetic Cost Breakdown: public files, dated" description="How Cosmetic Cost Breakdown writes its pages: CMS rate files and published survey averages only, every figure computed by a script, no medical advice, no money from clinics." lang={lang} noindex={true} breadcrumbs={[{ label: 'Editorial policy' }]} showAuthor={false}>
+<PageLayout title="Editorial policy of Cosmetic Cost Breakdown: public files, dated" description="How Cosmetic Cost Breakdown writes its pages: CMS rate files and other public files only, each figure computed by a script, no medical advice, no money from clinics." lang={lang} noindex={true} breadcrumbs={[{ label: 'Editorial policy' }]} showAuthor={false}>
   <div class="prose prose-slate max-w-none prose-headings:font-serif">
     <h1>Editorial policy</h1>
     <h2>What counts as a source</h2>
-    <p>Operating room and anesthesia figures come from the rate files of the Centers for Medicare and Medicaid Services, read in the official file and recorded with their edition. Surgeon fees come from the averages the American Society of Plastic Surgeons publishes procedure by procedure, quoted one at a time with their year and a link, never reproduced as a table. Botox units come from the FDA label, pay from the Bureau of Labor Statistics, credit rates from the Federal Reserve. Clinic, lender and review site pages are read to learn what people ask, never as a source of a number.</p>
+    <p>Operating room and anesthesia figures come from the rate files of the Centers for Medicare and Medicaid Services, read in the official file and recorded with their edition. No public file publishes surgeons' fees for cosmetic work, so the site gives none: the surgeon's line comes only from the reader's own quote. Botox units come from the FDA label, pay from the Bureau of Labor Statistics, credit rates from the Federal Reserve. Clinic, lender and review site pages are read to learn what people ask, never as a source of a number.</p>
     <h2>How a figure reaches a page</h2>
     <p>No figure is typed into the text. A script reads the CMS files and writes the rates of each code; the pages compute every amount from those tables and from one dated parameter file when the site is built. A procedure that cannot be priced from a public file is left out rather than guessed.</p>
     <h2>Health pages</h2>

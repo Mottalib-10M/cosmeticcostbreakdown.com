@@ -1,5 +1,5 @@
 {
- "_lisezmoi": "Paramètres du site (RECETTE §4). Chaque valeur a été relue sur la source citée le 2026-10-20. Les tarifs CMS (rates.json, metros.json) sont produits par scripts/build-data.py à partir des fichiers officiels ; ici vivent les choix du site (codes de chaque acte, code d'anesthésie, durée par défaut et sa source), les honoraires moyens publiés par l'ASPS (cités comme honoraires du chirurgien seuls, avec leur année), les zones métropolitaines, les règles de paiement et les sources.",
+ "_lisezmoi": "Paramètres du site (RECETTE §4). Chaque valeur a été relue sur la source citée le 2026-10-20. Les tarifs CMS (rates.json, metros.json) sont produits par scripts/build-data.py à partir des fichiers officiels ; ici vivent les choix du site (codes de chaque acte, code d'anesthésie, durée par défaut et sa source), les zones métropolitaines, les règles de paiement et les sources.",
  "year": 2026,
  "retrieved_at": "2026-10-20",
  "valid_from": "2026-10-01",
@@ -15,11 +15,6 @@
   "oppsRelease": "2026-10",
   "anesYear": 2026,
   "baseUnitsEdition": 2022
- },
- "surgeonFee": {
-  "_source": "asps_stats",
-  "year": 2023,
-  "note": "Average surgeon/physician fee reported by ASPS member surgeons; excludes anesthesia, operating room facilities and other related expenses (ASPS cost pages)."
  },
  "earnings": {
   "_source": "bls_earnings",
@@ -58,16 +53,13 @@
     "label": "Neck bands, one band each side",
     "units": 26
    }
-  },
-  "asps2023": 435
+  }
  },
  "procedures": {
   "tummy_tuck": {
    "label": "Tummy tuck (abdominoplasty)",
    "short": "Tummy tuck",
    "unit": "full abdominoplasty",
-   "aspsFee": 8174,
-   "aspsSource": "asps_tummy_tuck",
    "codes": [
     {
      "cpt": "15830"
@@ -82,8 +74,6 @@
    "label": "Liposuction of the abdomen and flanks",
    "short": "Liposuction",
    "unit": "one body area, the trunk",
-   "aspsFee": 4711,
-   "aspsSource": "asps_liposuction",
    "codes": [
     {
      "cpt": "15877"
@@ -98,8 +88,6 @@
    "label": "Brazilian butt lift (buttock fat grafting)",
    "short": "Brazilian butt lift",
    "unit": "liposuction harvest and fat transfer to the buttocks",
-   "aspsFee": 7264,
-   "aspsSource": "asps_buttock_enhancement",
    "codes": [
     {
      "cpt": "15771"
@@ -117,8 +105,6 @@
    "label": "Breast augmentation with implants",
    "short": "Breast augmentation",
    "unit": "both breasts, implants",
-   "aspsFee": 4875,
-   "aspsSource": "asps_breast_augmentation",
    "codes": [
     {
      "cpt": "19325"
@@ -128,15 +114,12 @@
    "minutes": null,
    "minutesSource": "cms_time",
    "kind": "surgery",
-   "aspsFatGrafting": 5719,
-   "_note": "aspsFatGrafting: average for breast augmentation with fat grafting, same ASPS page and year. Implant code L8600: ASC Addendum BB indicator N1 (packaged), OPPS Addendum B status N (packaged), October 2026."
+   "_note": "Implant code L8600: ASC Addendum BB indicator N1 (packaged), OPPS Addendum B status N (packaged), October 2026."
   },
   "breast_lift": {
    "label": "Breast lift (mastopexy)",
    "short": "Breast lift",
    "unit": "both breasts",
-   "aspsFee": 6816,
-   "aspsSource": "asps_breast_lift",
    "codes": [
     {
      "cpt": "19316"
@@ -151,8 +134,6 @@
    "label": "Rhinoplasty (nose reshaping)",
    "short": "Rhinoplasty",
    "unit": "primary rhinoplasty, bone and cartilage",
-   "aspsFee": 7637,
-   "aspsSource": "asps_rhinoplasty",
    "codes": [
     {
      "cpt": "30410"
@@ -167,8 +148,6 @@
    "label": "Facelift (rhytidectomy)",
    "short": "Facelift",
    "unit": "cheek, chin and neck",
-   "aspsFee": 11395,
-   "aspsSource": "asps_facelift",
    "codes": [
     {
      "cpt": "15828"
@@ -183,8 +162,6 @@
    "label": "Brow lift (forehead lift)",
    "short": "Brow lift",
    "unit": "brow and forehead",
-   "aspsFee": 5460,
-   "aspsSource": "asps_brow_lift",
    "codes": [
     {
      "cpt": "67900"
@@ -199,8 +176,6 @@
    "label": "Upper eyelid surgery (blepharoplasty)",
    "short": "Upper eyelid surgery",
    "unit": "both upper lids",
-   "aspsFee": 3359,
-   "aspsSource": "asps_eyelid_surgery",
    "codes": [
     {
      "cpt": "15822"
@@ -215,8 +190,6 @@
    "label": "Lower eyelid surgery (blepharoplasty)",
    "short": "Lower eyelid surgery",
    "unit": "both lower lids",
-   "aspsFee": 3876,
-   "aspsSource": "asps_eyelid_surgery",
    "codes": [
     {
      "cpt": "15820"
@@ -231,8 +204,6 @@
    "label": "Chin augmentation with an implant",
    "short": "Chin implant",
    "unit": "implant placed in the chin",
-   "aspsFee": 3641,
-   "aspsSource": "asps_chin_surgery",
    "codes": [
     {
      "cpt": "21120"
@@ -247,8 +218,6 @@
    "label": "Ear pinning (otoplasty)",
    "short": "Otoplasty",
    "unit": "CPT 69300, one ear",
-   "aspsFee": 4625,
-   "aspsSource": "asps_ear_surgery",
    "codes": [
     {
      "cpt": "69300"
@@ -263,8 +232,6 @@
    "label": "Arm lift (brachioplasty)",
    "short": "Arm lift",
    "unit": "both upper arms",
-   "aspsFee": 6192,
-   "aspsSource": "asps_arm_lift",
    "codes": [
     {
      "cpt": "15836"
@@ -279,8 +246,6 @@
    "label": "Thigh lift (thighplasty)",
    "short": "Thigh lift",
    "unit": "both thighs",
-   "aspsFee": 7641,
-   "aspsSource": "asps_thigh_lift",
    "codes": [
     {
      "cpt": "15832"
@@ -295,8 +260,6 @@
    "label": "Male breast reduction (gynecomastia surgery)",
    "short": "Gynecomastia surgery",
    "unit": "both sides",
-   "aspsFee": 5587,
-   "aspsSource": "asps_gynecomastia_surgery",
    "codes": [
     {
      "cpt": "19300"
@@ -583,102 +546,6 @@
    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=485d9b71-6881-42c5-a620-a4360c7192ab",
    "label": {
     "en": "DailyMed (National Library of Medicine), onabotulinumtoxinA for injection, cosmetic indications, prescribing information revised October 2024"
-   }
-  },
-  "asps_stats": {
-   "url": "https://www.plasticsurgery.org/plastic-surgery-statistics",
-   "label": {
-    "en": "American Society of Plastic Surgeons, plastic surgery statistics (average surgeon/physician fees, 2023 survey)"
-   }
-  },
-  "asps_tummy_tuck": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/tummy-tuck/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of tummy tuck: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_liposuction": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/liposuction/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of liposuction: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_buttock_enhancement": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/buttock-enhancement/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of buttock enhancement: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_breast_augmentation": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/breast-augmentation/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of breast augmentation: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_breast_lift": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/breast-lift/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of breast lift: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_rhinoplasty": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/rhinoplasty/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of rhinoplasty: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_facelift": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/facelift/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of facelift: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_brow_lift": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/brow-lift/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of brow lift: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_eyelid_surgery": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/eyelid-surgery/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of eyelid surgery: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_chin_surgery": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/chin-surgery/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of chin surgery: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_ear_surgery": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/ear-surgery/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of ear surgery: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_arm_lift": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/arm-lift/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of arm lift: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_thigh_lift": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/thigh-lift/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of thigh lift: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_gynecomastia_surgery": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/gynecomastia-surgery/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of gynecomastia surgery: average surgeon fee, which excludes anesthesia and operating room"
-   }
-  },
-  "asps_botulinum_toxin": {
-   "url": "https://www.plasticsurgery.org/cosmetic-procedures/botulinum-toxin/cost",
-   "label": {
-    "en": "American Society of Plastic Surgeons, cost of botulinum toxin injections: average surgeon fee, which excludes anesthesia and operating room"
    }
   },
   "bls_earnings": {

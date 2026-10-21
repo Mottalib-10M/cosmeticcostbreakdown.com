@@ -2,8 +2,8 @@ import { defineGuide } from '../../lib/page-types';
 import { KIT as K } from '../../lib/kit';
 
 const C = K.P.credit;
-const tt = K.est('tummy_tuck');
-const amt = Math.round(tt.total / 500) * 500;
+/** An example amount, the default of the finance calculator; enter your own quote in it. */
+const amt = 10000;
 const card = K.loan(amt, C.cardAssessedInterest, 24);
 const pl = K.loan(amt, C.personalLoan24, 24);
 const d = K.deferred(amt, C.cardAssessedInterest, 12, 600);
@@ -21,7 +21,7 @@ export default defineGuide({
   description: 'Plastic surgery financing in 2026: monthly payment and interest for a personal loan, a credit card and a deferred-interest card, at Federal Reserve averages.',
   h1: 'Paying for cosmetic surgery over time: what each option costs',
   intro: 'No lender is named here. Enter the amount and a rate: the calculator shows the monthly payment, the interest, and what a deferred-interest promotion charges back.',
-  resume: `Spreading a ${K.usd(amt)} cosmetic surgery bill, about a tummy tuck benchmark, over 24 months costs very different amounts depending on the credit used. On a credit card at ${K.pct(C.cardAssessedInterest / 100, 2)}, the Federal Reserve's average rate in ${period} for accounts charged interest, the payment is ${K.usd(card.monthly)} a month and the interest ${K.usd(card.totalInterest)}. With a 24-month personal loan at the average rate of ${K.pct(C.personalLoan24 / 100, 2)} from commercial banks, the payment is ${K.usd(pl.monthly)} and the interest ${K.usd(pl.totalInterest)}. Medical credit cards often offer deferred interest: no interest if the balance is paid in full within the promotion, but all the interest of the period charged back if any balance remains. Paying ${K.usd(600)} a month on a twelve-month promotion would leave a balance and trigger ${K.usd(d.backInterest)} of back interest.`,
+  resume: `Spreading a ${K.usd(amt)} cosmetic surgery bill, an example amount to replace with your own quote, over 24 months costs very different amounts depending on the credit used. On a credit card at ${K.pct(C.cardAssessedInterest / 100, 2)}, the Federal Reserve's average rate in ${period} for accounts charged interest, the payment is ${K.usd(card.monthly)} a month and the interest ${K.usd(card.totalInterest)}. With a 24-month personal loan at the average rate of ${K.pct(C.personalLoan24 / 100, 2)} from commercial banks, the payment is ${K.usd(pl.monthly)} and the interest ${K.usd(pl.totalInterest)}. Medical credit cards often offer deferred interest: no interest if the balance is paid in full within the promotion, but all the interest of the period charged back if any balance remains. Paying ${K.usd(600)} a month on a twelve-month promotion would leave a balance and trigger ${K.usd(d.backInterest)} of back interest.`,
   body: (h) => `
 <h2>Three ways to spread the bill</h2>
 <p>A personal loan has a fixed rate, a fixed payment and a fixed end; its cost is known on the first day. A general credit card has a variable rate and a minimum payment that can stretch the debt over years. A medical credit card, offered at some practices, usually works as a deferred-interest card: interest accrues from the first day at the card's rate but is waived if the whole balance is paid before the promotion ends. The rates used here are averages from the Federal Reserve's ${h.src('fed_g19', 'G.19 release')}, not offers; your own rate depends on your credit.</p>

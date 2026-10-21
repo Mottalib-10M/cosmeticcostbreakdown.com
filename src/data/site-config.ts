@@ -10,8 +10,8 @@ export const YEAR = 2026;
 export const SITE_FOUNDED = '2026';
 export const LAST_UPDATED = '2026-10-20';
 export const AUTHOR_NAME = 'Radif Partners';
-export const AUTHOR_ROLE: Record<string, string> = {"en": "Independent publisher of cosmetic surgery cost breakdowns built from public Medicare rate files and published surgeon-fee surveys"};
-export const AUTHOR_DESC: Record<string, string> = {"en": "Radif Partners splits the price of a cosmetic procedure into the parts a patient actually pays for: the surgeon's fee, the anesthesia, the operating room and the weeks after. The operating room and anesthesia lines come from the rate files Medicare publishes for 2026 (surgery center and hospital outpatient rates, anesthesia units and local conversion factors), adjusted to the metro area you pick; the surgeon line is the survey average its source publishes, with its year. The site sells nothing, refers no patient, offers no financing and never says whether a procedure is right for you."};
+export const AUTHOR_ROLE: Record<string, string> = {"en": "Independent publisher of cosmetic surgery cost breakdowns built from public Medicare rate files"};
+export const AUTHOR_DESC: Record<string, string> = {"en": "Radif Partners splits the price of a cosmetic procedure into the parts a patient actually pays for: the surgeon's fee, the anesthesia, the operating room and the weeks after. The operating room and anesthesia lines come from the rate files Medicare publishes for 2026 (surgery center and hospital outpatient rates, anesthesia units and local conversion factors), adjusted to the metro area you pick; the surgeon line, which no public file prices, comes from your own quote. The site sells nothing, refers no patient, offers no financing and never says whether a procedure is right for you."};
 /** Sujets sur lesquels l'editeur est competent (schema.org knowsAbout). Ce sont les
  *  themes reellement traites par le site, pas une liste de mots-cles : un sujet
  *  declare ici sans page qui le couvre est une declaration fausse. */

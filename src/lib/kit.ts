@@ -1,10 +1,10 @@
 /**
  * Writing kit (CONTRIBUTING-PAGES.md): every figure written in a page comes from here, never typed by hand.
- *   K.P                 params-2026.json (procedures, metros, rules, surgeon survey year, earnings, credit, botox, sources)
+ *   K.P                 params-2026.json (procedures, metros, rules, earnings, credit, botox, sources)
  *   K.R                 rates.json (CMS rates of every CPT code, base units, national anesthesia factor, ASP limits)
- *   K.PROCS, K.PR(id)   the procedures (label, codes, anesthesia code, survey fee, default minutes)
+ *   K.PROCS, K.PR(id)   the procedures (label, codes, anesthesia code, default minutes)
  *   K.METROS, K.M(slug) the metro areas (wage indexes, anesthesia conversion factor, locality)
- *   K.est(id, slug, setting)   benchmark cost of a procedure (engine `cost`), slug "us" = national rates
+ *   K.est(id, slug, setting)   benchmark of a procedure, operating room + anesthesia (engine `cost`, no surgeon quote), slug "us" = national rates
  *   K.across(id, setting)      the procedure in every metro, highest first
  *   K.min(id)           default minutes of a procedure
  *   K.tool(kind, args)  runs a calculator of tool-specs.ts and returns its result card

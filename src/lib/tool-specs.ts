@@ -18,7 +18,6 @@ const s = (v: V, k: string) => String(v[k]);
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const longDate = (iso: string) => `${MONTHS[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(8, 10))}, ${iso.slice(0, 4)}`;
 export const DAILY_PAY = Math.round((P.earnings.medianWeekly / 5) * 10) / 10;
-const SURGEON_YEAR = P.surgeonFee.year;
 
 const SURGERY_IDS = PROC_IDS.filter((k) => PROCS[k].kind === 'surgery');
 const procIn = (def: string, id = 'pr', label = 'Procedure', none = false): Input => ({
@@ -38,22 +37,22 @@ function costCard(v: V, ids: string[], title: string): ToolOut {
     daysOff: n(v, 'do'), dailyPay: v.dp === undefined ? DAILY_PAY : n(v, 'dp'), extras: n(v, 'ex'),
   }, RATES, RULES);
   const rows: ToolOut['rows'] = [
-    [c.surgeonIsQuote ? "Surgeon's fee, your quote" : `Surgeon's fee, survey average (${SURGEON_YEAR})`, usd(c.surgeon), c.surgeon],
+    c.surgeonIsQuote ? ["Surgeon's fee, your quote", usd(c.surgeon), c.surgeon] : ["Surgeon's fee", 'not included, enter your quote'],
     [c.anesthesiaIsQuote ? 'Anesthesia, your quote' : `Anesthesia, ${formatDecimal(c.anesthesia.baseUnits + c.anesthesia.timeUnits, 1)} units`, usd(c.anesthesiaAmount), c.anesthesiaAmount],
     [c.facilityIsQuote ? 'Operating room, your quote' : `Operating room, ${settingName(setting)}`, usd(c.facilityAmount), c.facilityAmount],
   ];
   if (c.after > 0.5) rows.push(['Time off work and items after surgery', usd(c.after), c.after]);
   const lines = c.facility.lines.map((l) => [`CPT ${l.cpt}`, RATES.cpt[l.cpt].asc.label, l.packaged ? 'packaged' : pct(l.share, 0), usd(l.national), usd(l.amount)]);
   return {
-    label: `${title} ${placeLabel(slug)}`, value: usd(c.total),
-    sub: `Surgeon ${usd(c.surgeon)}, anesthesia ${usd(c.anesthesiaAmount)}, operating room ${usd(c.facilityAmount)}${c.after > 0.5 ? `, after surgery ${usd(c.after)}` : ''}.`,
+    label: `${title}${c.surgeonIsQuote ? '' : ' before the surgeon'} ${placeLabel(slug)}`, value: usd(c.total),
+    sub: `${c.surgeonIsQuote ? `Surgeon ${usd(c.surgeon)}, a` : 'A'}nesthesia ${usd(c.anesthesiaAmount)}, operating room ${usd(c.facilityAmount)}${c.after > 0.5 ? `, after surgery ${usd(c.after)}` : ''}.`,
     rows,
     table: {
       caption: `Operating room: CMS ${setting === 'hopd' ? 'OPPS Addendum B' : 'ASC Addendum AA'}, October 2026, local factor ${formatDecimal(c.facility.factor, 4)}. Anesthesia: ${c.anesthesia.baseUnits} base units + ${formatDecimal(c.anesthesia.timeUnits, 1)} time units (${Math.round(c.minutes)} minutes) x ${cents(c.anesthesia.cf)}.`,
       headers: ['Code', 'CMS short descriptor', 'Share paid', 'National rate', 'Local amount'],
       rows: lines, align: ['l', 'l', 'r', 'r', 'r'],
     },
-    note: `Benchmark, not a quote: the operating room and anesthesia lines are 2026 Medicare rates for the same codes; private prices for cosmetic work are set by each practice and are often higher. The surgeon line is the national average fee its survey reports for ${SURGEON_YEAR}.`,
+    note: `Benchmark, not a quote: the operating room and anesthesia lines are 2026 Medicare rates for the same codes; private prices for cosmetic work are set by each practice and are often higher. No public file prices the surgeon's fee: it counts only once you enter the figure from your own quote.`,
   };
 }
 
@@ -69,7 +68,7 @@ const QUOTES: Input[] = [
 export const SPECS: Record<string, (arg?: Record<string, number | string>) => ToolSpec> = {
   /* Procedure x metro x setting -> total, line by line */
   cost: (arg) => ({
-    inputs: [procIn(String(arg?.pr ?? 'tummy_tuck')), metroIn(), SETTING, { id: 'sq', label: "Surgeon's quote, if you have one", def: 0, unit: '$', max: 200000, help: 'Empty: the survey average' }, ...QUOTES],
+    inputs: [procIn(String(arg?.pr ?? 'tummy_tuck')), metroIn(), SETTING, { id: 'sq', label: "Surgeon's quote, if you have one", def: 0, unit: '$', max: 200000, help: 'Empty: surgeon left out of the total' }, ...QUOTES],
     run: (v) => costCard(v, [s(v, 'pr')], `${PROCS[s(v, 'pr')].short}, estimated total`),
   }),
   /* Several procedures in one session */
@@ -81,16 +80,15 @@ export const SPECS: Record<string, (arg?: Record<string, number | string>) => To
       const r = combineSaving(ids.map(proc), setting, place, RATES, RULES);
       const apartTotal = r.separate.reduce((t, c) => t + c.total, 0);
       return {
-        label: `${ids.length > 1 ? 'One session' : PROCS[ids[0]].short} ${placeLabel(slug)}`, value: usd(r.combined.total),
-        sub: ids.length > 1 ? `${usd(apartTotal - r.combined.total)} less than ${ids.length} separate operations, on the operating room and anesthesia lines alone.` : 'Add a second procedure to see the combined session.',
+        label: `${ids.length > 1 ? 'One session' : PROCS[ids[0]].short}, room and anesthesia ${placeLabel(slug)}`, value: usd(r.combined.total),
+        sub: ids.length > 1 ? `${usd(apartTotal - r.combined.total)} less than ${ids.length} separate operations, on the operating room and anesthesia lines.` : 'Add a second procedure to see the combined session.',
         rows: [
-          [`Surgeons' fees, survey averages added (${SURGEON_YEAR})`, usd(r.combined.surgeon), r.combined.surgeon],
           [`Anesthesia, one session of ${Math.round(r.combined.minutes)} minutes`, usd(r.combined.anesthesiaAmount), r.combined.anesthesiaAmount],
           [`Operating room, ${settingName(setting)}`, usd(r.combined.facilityAmount), r.combined.facilityAmount],
           ['Saved on the operating room', usd(r.facilitySaved)],
           ['Saved on anesthesia base units', usd(r.anesthesiaSaved)],
         ],
-        note: 'Medicare pays the highest-rated code in full and the others at half, or packages them into one comprehensive hospital payment. Surgeons price combined work themselves; the survey averages are simply added here.',
+        note: 'Medicare pays the highest-rated code in full and the others at half, or packages them into one comprehensive hospital payment. Surgeons price combined work themselves; their fees are not included here.',
       };
     },
   }),
@@ -105,8 +103,8 @@ export const SPECS: Record<string, (arg?: Record<string, number | string>) => To
       return {
         label: `${PROCS[id].short}: highest of ${rows.length} metro areas`, value: usd(hi.c.total), sub: `${hi.m.name}; the lowest is ${lo.m.name} at ${usd(lo.c.total)}, national rates give ${usd(nat.total)}.`,
         rows: [[`Highest: ${hi.m.name}`, usd(hi.c.total), hi.c.total], ['National rates', usd(nat.total), nat.total], [`Lowest: ${lo.m.name}`, usd(lo.c.total), lo.c.total]],
-        table: { headers: ['Metro area', 'Operating room', 'Anesthesia', 'Total with surgeon average'], rows: rows.map((r) => [r.m.name, usd(r.c.facilityAmount), usd(r.c.anesthesiaAmount), usd(r.c.total)]), align: ['l', 'r', 'r', 'r'] },
-        note: 'Only the operating room and anesthesia lines move with the metro area; the surgeon average is national.',
+        table: { headers: ['Metro area', 'Operating room', 'Anesthesia', 'Room and anesthesia'], rows: rows.map((r) => [r.m.name, usd(r.c.facilityAmount), usd(r.c.anesthesiaAmount), usd(r.c.total)]), align: ['l', 'r', 'r', 'r'] },
+        note: 'Operating room and anesthesia only, both adjusted to the metro area. No public file prices the surgeon by metro, so the surgeon is not included.',
       };
     },
   }),
@@ -150,8 +148,8 @@ export const SPECS: Record<string, (arg?: Record<string, number | string>) => To
       const rest = q - c.facilityAmount - c.anesthesiaAmount;
       return {
         label: 'Left for the surgeon once the room and anesthesia are counted at Medicare rates', value: usd(rest),
-        sub: rest >= c.surgeon ? `${usd(rest - c.surgeon)} above the ${SURGEON_YEAR} survey average for the surgeon.` : `${usd(c.surgeon - rest)} below the ${SURGEON_YEAR} survey average for the surgeon.`,
-        rows: [['Your quote', usd(q), q], ['Operating room at the Medicare rate', usd(c.facilityAmount), c.facilityAmount], ['Anesthesia at the Medicare rate', usd(c.anesthesiaAmount), c.anesthesiaAmount], [`Survey average for the surgeon (${SURGEON_YEAR})`, usd(c.surgeon), c.surgeon]],
+        sub: rest > 0 ? `${pct(rest / q, 0)} of your quote, if the room and anesthesia were billed at Medicare rates.` : 'Your quote does not even cover the room and anesthesia at Medicare rates: ask what it leaves out.',
+        rows: [['Your quote', usd(q), q], ['Operating room at the Medicare rate', usd(c.facilityAmount), c.facilityAmount], ['Anesthesia at the Medicare rate', usd(c.anesthesiaAmount), c.anesthesiaAmount], ['Left for the surgeon', usd(rest), Math.max(0, rest)]],
         note: 'Private facilities and anesthesia groups usually charge more than Medicare, so the true surgeon share of a quote is lower than this figure. Ask for the quote split into its parts.',
       };
     },
@@ -166,11 +164,10 @@ export const SPECS: Record<string, (arg?: Record<string, number | string>) => To
       const a = (P.botox.areas as Record<string, { label: string; units: number }>)[s(v, 'ar')];
       const lim = RATES.asp.J0585.limit;
       const t = toxinCost(a.units, lim, n(v, 'pu'));
-      const avg = P.botox.asps2023;
       return {
-        label: t.quote ? `Your quote for ${a.units} units` : 'Average fee per treatment, national survey', value: usd(t.quote || avg),
-        sub: t.quote ? `${usd(t.quote - t.product)} above the toxin's own cost at the Medicare payment limit.` : `Survey of ${SURGEON_YEAR}; the toxin alone for ${a.units} units costs about ${usd(t.product)} at the Medicare payment limit.`,
-        rows: [[`Units on the label for this area`, String(a.units)], ['Toxin at the Medicare limit, per unit', cents(lim)], ['Toxin for the area', usd(t.product), t.product], [`Average fee per treatment (${SURGEON_YEAR})`, usd(avg), avg]],
+        label: t.quote ? `Your quote for ${a.units} units` : `Toxin alone for ${a.units} units, at the Medicare payment limit`, value: usd(t.quote || t.product),
+        sub: t.quote ? `${usd(t.quote - t.product)} above the toxin's own cost at the Medicare payment limit.` : "The injector's fee comes on top; enter the price per unit you were quoted to see the gap.",
+        rows: [[`Units on the label for this area`, String(a.units)], ['Toxin at the Medicare limit, per unit', cents(lim)], ['Toxin for the area', usd(t.product), t.product], ...(t.quote ? [['Your quote', usd(t.quote), t.quote] as [string, string, number]] : [])],
         note: 'Units: FDA-approved label of onabotulinumtoxinA for cosmetic use. Payment limit: CMS, October 2026, code J0585. Other brands use other units that do not convert one to one.',
       };
     },

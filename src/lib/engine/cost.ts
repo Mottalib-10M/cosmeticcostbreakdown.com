@@ -9,7 +9,8 @@
  *    the session, so only the highest J1 rate is paid; without J1, status T codes follow the 100 % / 50 % rule.
  *  - Anesthesia: (base units of the anesthesia code + minutes / 15) x conversion factor of the Medicare locality.
  *    A session with several procedures is billed once: the highest base unit, the time of the whole session.
- *  - Surgeon: the survey average published for the procedure, or the reader's quote.
+ *  - Surgeon: the reader's quote only. No public file prices a cosmetic surgeon's fee, so without a quote the
+ *    line is left out of the total (0) and shown as missing.
  *  - After: unpaid days off x daily pay, plus the items the reader was quoted.
  */
 
@@ -69,7 +70,7 @@ export function anesthesiaFee(asaCodes: string[], minutes: number, place: Place 
   return { baseUnits, timeUnits, cf, total: (baseUnits + timeUnits) * cf };
 }
 
-export interface Proc { codes: Array<{ cpt: string }>; asa: string | null; minutes: number | null; aspsFee: number }
+export interface Proc { codes: Array<{ cpt: string }>; asa: string | null; minutes: number | null }
 /** Default minutes of a procedure: its own figure (a published series) or the CMS median intra-service time of its codes. */
 export function defaultMinutes(p: Proc, rates: Rates): number {
   if (p.minutes) return p.minutes;
@@ -97,7 +98,7 @@ export function cost(x: CostIn, rates: Rates, rules: Rules): Cost {
   const minutes = x.minutes && x.minutes > 0 ? x.minutes : x.procs.reduce((t, p) => t + defaultMinutes(p, rates), 0);
   const anesthesia = anesthesiaFee(x.procs.map((p) => p.asa).filter((a): a is string => !!a), minutes, x.place, rates, rules);
   const surgeonIsQuote = !!x.surgeonQuote && x.surgeonQuote > 0;
-  const surgeon = surgeonIsQuote ? x.surgeonQuote! : x.procs.reduce((t, p) => t + p.aspsFee, 0);
+  const surgeon = surgeonIsQuote ? x.surgeonQuote! : 0;
   const facilityIsQuote = !!x.facilityQuote && x.facilityQuote > 0;
   const anesthesiaIsQuote = !!x.anesthesiaQuote && x.anesthesiaQuote > 0;
   const facilityAmount = facilityIsQuote ? x.facilityQuote! : facility.total;

@@ -10,25 +10,25 @@ const lang = 'en';
 const path = route('method', lang);
 const P = K.P;
 const R = P.rules;
-const title = 'Cosmetic Surgery Cost Method 2026: CMS Rates, Survey Fees';
-const description = `Cosmetic surgery cost method for 2026: surgery center and hospital rates, anesthesia units and local factors from CMS, the surgeon survey average, the limits.`;
+const title = 'Cosmetic Surgery Cost Method 2026: CMS Rates and Limits';
+const description = `Cosmetic surgery cost method for 2026: surgery center and hospital rates, anesthesia units and local factors from CMS, the surgeon's quote, and the limits.`;
 const ex = K.est('breast_aug', 'miami');
 const exm = K.M('miami');
 const procRows = K.PROC_IDS.map((id) => {
   const p = K.PR(id);
   const src = p.minutesSource === 'cms_time' ? 'CMS median' : p.minutesSource === 'study_lipo' ? 'published series (liposuction)' : 'published series (facelift)';
-  return [p.label, p.codes.map((c) => c.cpt).join(' + '), p.asa ?? 'none', String(K.R.asa[p.asa!] ?? ''), `${Math.round(K.min(id))} (${src})`, K.usd(p.aspsFee)];
+  return [p.label, p.codes.map((c) => c.cpt).join(' + '), p.asa ?? 'none', String(K.R.asa[p.asa!] ?? ''), `${Math.round(K.min(id))} (${src})`];
 });
 const metroRows = K.METROS.map((m) => [m.name, m.cbsa, K.dec(m.wiAsc, 4), K.dec(m.wiHospital, 4), m.localityName, K.cents(m.anesCf)]);
 ---
 <PageLayout title={title} description={description} lang={lang} jsonLd={[webPageSchema({ name: 'Where each line comes from', description, path, lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Where each line comes from', path }])]} breadcrumbs={[{ label: 'Where each line comes from' }]}>
   <article class="prose prose-slate max-w-none prose-headings:font-serif">
     <h1>Where each line of the bill comes from</h1>
-    <p><strong>Every estimate on this site is the sum of separate lines, each computed from its own public file: the surgeon's fee from the survey average of {P.surgeonFee.year}, the anesthesia from the CMS base units and the 2026 conversion factor of the Medicare locality, the operating room from the CMS October 2026 rate of the procedure's codes adjusted with the FY 2026 wage index, and the weeks after from what you enter.</strong> One script reads the CMS files and writes the tables the pages compute from; nothing is typed by hand.</p>
+    <p><strong>Every estimate on this site is the sum of separate lines, each computed from its own public file: the anesthesia from the CMS base units and the 2026 conversion factor of the Medicare locality, the operating room from the CMS October 2026 rate of the procedure's codes adjusted with the FY 2026 wage index, and the weeks after from what you enter. The surgeon's fee is the one line no public file prices: it counts only when you type the figure of your quote.</strong> One script reads the CMS files and writes the tables the pages compute from; nothing is typed by hand.</p>
     <p>{VALUE}</p>
 
     <h2>1. The surgeon's fee</h2>
-    <p>The American Society of Plastic Surgeons publishes, for each cosmetic procedure, the average fee its member surgeons reported in its annual survey. The figures used here are those of {P.surgeonFee.year}, the latest year for which the society publishes fees on its procedure pages (<Fragment set:html={src('asps_stats', 'statistics')} />). The society states that the average excludes anesthesia, operating room facilities and other related expenses: it is the surgeon's line only, and the site uses it only as such. It is a national figure: no public file gives surgeons' fees by metro area, so this line does not move when you change the metro. When you type a surgeon's quote, it replaces the average.</p>
+    <p>Each practice sets its own surgeon's fee for cosmetic work, and no public file publishes those fees, nationally or by metro area. Medicare does not pay for cosmetic surgery, so its physician fee schedule gives no cosmetic fee either. The site therefore leaves the surgeon out of every benchmark: the totals on the pages are the operating room and the anesthesia only. When you type a surgeon's quote in the calculator, it is added as the first line of the bill, and the quote checker shows what a single all-inclusive quote leaves for the surgeon once the other two lines are counted at Medicare rates.</p>
 
     <h2>2. The operating room</h2>
     <p>Medicare publishes what it pays the facility for each procedure code. In an ambulatory surgery center, the national rate is in <Fragment set:html={src('cms_asc_addenda', 'Addendum AA')} />; in a hospital outpatient department, in <Fragment set:html={src('cms_opps_b', 'Addendum B')} />. We use the October 2026 editions. Each national rate is adjusted to the metro area as the <Fragment set:html={src('fr_opps_asc_2026', 'CY 2026 final rule')} /> prescribes: for a surgery center, {K.pct(R.ascLaborShare, 0)} of the rate is multiplied by the wage index of the area, taken before the rural floor and reclassification; for a hospital, {K.pct(R.oppsLaborShare, 0)} is multiplied by the final wage index of the area (<Fragment set:html={src('cms_wage_index', 'FY 2026 Table 3')} />).</p>
@@ -42,10 +42,10 @@ const metroRows = K.METROS.map((m) => [m.name, m.cbsa, K.dec(m.wiAsc, 4), K.dec(
     <p>Unpaid days off work are multiplied by a daily pay, by default the median usual weekly earnings of full-time workers in the {P.earnings.period.replace('-Q', ', quarter ')} release of the Bureau of Labor Statistics, {K.usd(P.earnings.medianWeekly)}, divided by five (<Fragment set:html={src('bls_earnings', 'series ' + P.earnings.series)} />). Garments, medicines and help at home are what you enter. Financing uses the Federal Reserve's <Fragment set:html={src('fed_g19', 'G.19')} /> average rates and the deferred interest rule of <Fragment set:html={src('cfr_1026_16', 'Regulation Z')} />.</p>
 
     <h2>5. A worked example</h2>
-    <p>A breast augmentation in {exm.name} in a surgery center. The national rate of CPT 19325 is {K.usd(K.R.cpt['19325'].asc.rate)}; the wage index of CBSA {exm.cbsa} before floor is {K.dec(exm.wiAsc, 4)}, so the factor is {K.pct(R.ascLaborShare, 0)} × {K.dec(exm.wiAsc, 4)} + {K.pct(1 - R.ascLaborShare, 0)} = {K.dec(ex.facility.factor, 4)}, and the room comes to {K.usd(ex.facilityAmount)}. Anesthesia code 00402 carries {ex.anesthesia.baseUnits} base units; the CMS median time of {Math.round(ex.minutes)} minutes adds {K.dec(ex.anesthesia.timeUnits, 1)} units; at the factor of {K.cents(ex.anesthesia.cf)} for the locality {exm.localityName.toLowerCase()}, that makes {K.usd(ex.anesthesiaAmount)}. The surgeon's average is {K.usd(ex.surgeon)}. Total: {K.usd(ex.total)}.</p>
+    <p>A breast augmentation in {exm.name} in a surgery center. The national rate of CPT 19325 is {K.usd(K.R.cpt['19325'].asc.rate)}; the wage index of CBSA {exm.cbsa} before floor is {K.dec(exm.wiAsc, 4)}, so the factor is {K.pct(R.ascLaborShare, 0)} × {K.dec(exm.wiAsc, 4)} + {K.pct(1 - R.ascLaborShare, 0)} = {K.dec(ex.facility.factor, 4)}, and the room comes to {K.usd(ex.facilityAmount)}. Anesthesia code 00402 carries {ex.anesthesia.baseUnits} base units; the CMS median time of {Math.round(ex.minutes)} minutes adds {K.dec(ex.anesthesia.timeUnits, 1)} units; at the factor of {K.cents(ex.anesthesia.cf)} for the locality {exm.localityName.toLowerCase()}, that makes {K.usd(ex.anesthesiaAmount)}. Room and anesthesia: {K.usd(ex.total)}, before the surgeon's fee of your quote.</p>
 
     <h2>6. The procedures and their codes</h2>
-    <Fragment set:html={table(['Procedure', 'CPT codes', 'Anesthesia code', 'Base units', 'Default minutes', `Surgeon average (${P.surgeonFee.year})`], procRows, 'Codes chosen to describe the usual cosmetic operation; a surgeon may bill others.', ['l', 'l', 'l', 'r', 'l', 'r'])} />
+    <Fragment set:html={table(['Procedure', 'CPT codes', 'Anesthesia code', 'Base units', 'Default minutes'], procRows, 'Codes chosen to describe the usual cosmetic operation; a surgeon may bill others.', ['l', 'l', 'l', 'r', 'l'])} />
 
     <h2>7. The metro areas</h2>
     <Fragment set:html={table(['Metro area', 'CBSA', 'Wage index, surgery center', 'Wage index, hospital', 'Medicare locality', 'Anesthesia factor'], metroRows, 'FY 2026 wage index (Table 3) and CY 2026 anesthesia conversion factors.', ['l', 'l', 'r', 'r', 'l', 'r'])} />
@@ -53,9 +53,9 @@ const metroRows = K.METROS.map((m) => [m.name, m.cbsa, K.dec(m.wiAsc, 4), K.dec(
     <h2>8. Limits</h2>
     <ul>
       <li>Medicare does not pay for cosmetic surgery (<Fragment set:html={src('cfr_411_15', '42 CFR 411.15(h)')} />). Its rates for the same codes are a public benchmark, not what a cosmetic patient is charged: private facilities and anesthesia groups set their own prices, usually higher.</li>
-      <li>The surgeon average is national and dates from {P.surgeonFee.year}; fees have moved since and differ widely by city and by surgeon.</li>
+      <li>The surgeon's fee is not estimated. Each practice sets it, so a benchmark here, room and anesthesia only, is never the price of the operation.</li>
       <li>The codes of a real operation may differ from those used here, and implants, garments, tests and follow-up visits can be billed separately.</li>
-      <li>Hair transplants, neck lifts, dermal fillers and breast reductions are not estimated: either no surgeon average is published for them or no CMS file gives the time or the rate needed.</li>
+      <li>Hair transplants, neck lifts, dermal fillers and breast reductions are not estimated: no CMS file gives the codes, the time or the rate needed.</li>
       <li>Nothing here is medical advice or a quote. Only a surgeon who has examined you can say what you need and what it will cost.</li>
     </ul>
     <p>Corrections: <a href={route('contact', lang)}>contact page</a>.</p>

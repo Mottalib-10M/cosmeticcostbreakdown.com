@@ -8,7 +8,7 @@ import RATES_RAW from '../data/rates.json';
 import METROS_RAW from '../data/metros.json';
 import { cost, defaultMinutes, type Place, type Proc, type Rates, type Rules, type Setting } from './engine/cost';
 
-export interface Procedure extends Proc { id: string; label: string; short: string; unit: string; aspsSource: string; minutesSource: string; kind: string }
+export interface Procedure extends Proc { id: string; label: string; short: string; unit: string; minutesSource: string; kind: string }
 export interface Metro extends Place { slug: string; name: string; cbsa: string; state: string; mac: string; locality: string; area: string; localityName: string }
 
 export const RATES = RATES_RAW as unknown as Rates & { asp: Record<string, { label: string; dosage: string; limit: number }> };
